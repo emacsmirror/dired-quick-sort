@@ -1,7 +1,4 @@
-;; -*- lexical-binding: t; fill-column: 80; coding: utf-8; indent-tabs-mode: nil; -*-
-
-;;; dired-quick-sort.el --- Persistent quick sorting of dired buffers in various
-;;; ways. Optimized convenience when used with hydra.
+;;; dired-quick-sort.el --- Persistent quick sorting of dired buffers in various ways. -*- lexical-binding: t; fill-column: 80; coding: utf-8; indent-tabs-mode: nil; -*-
 
 ;; Copyright (C) 2016  Hong Xu <hong@topbug.net>
 
@@ -30,7 +27,7 @@
 ;;
 ;; This package provides ways to quickly sort dired buffers in various ways.
 ;; With `savehist-mode' enabled (strongly recommended), the last used sorting
-;; criteria are automatically used when sorting, even after restarting Emacs. A
+;; criteria are automatically used when sorting, even after restarting Emacs.  A
 ;; hydra is defined to conveniently change sorting criteria.
 
 ;;; Code:
@@ -40,32 +37,40 @@
 (require 'hydra)
 
 (defvar dired-quick-sort-sort-by-last "version"
-  "The main sort criteria used last time. Should be one of none, time, size,
-version (natural, an improved version of name) and extension.
+  "The main sort criteria used last time.
+
+The value should be one of none, time, size, version (natural, an improved
+version of name and extension.
 
 See the documentation of the \"--sort\" option of GNU ls for details.")
 (push 'dired-quick-sort-sort-by-last savehist-additional-variables)
 (defvar dired-quick-sort-reverse-last ?n
-  "Whether reversing was enabled when sorting was used last time. Should
-either be ?y or ?n.")
+  "Whether reversing was enabled when sorting was used last time.
+
+The value should be either ?y or ?n.")
 (push 'dired-quick-sort-reverse-last savehist-additional-variables)
 (defvar dired-quick-sort-group-directories-last ?n
-  "Whether directories are grouped together first when sorting was used last
-time. Should either be ?y or ?n.")
+  "Whether directories are grouped together when sorting was used last time.
+
+The value should either be ?y or ?n.")
 (push 'dired-quick-sort-group-directories-last savehist-additional-variables)
 (defvar dired-quick-sort-time-last "default"
-  "The time option used last time. Should be one of default (modified time),
-atime, access, use, ctime or status. If the sort-by option is set as \"time\",
-the specified time will be used as the key for sorting.
+  "The time option used last time.
+
+The value should be one of default (modified time), atime, access, use, ctime or
+status.  If the sort-by option is set as \"time\", the specified time will be
+used as the key for sorting.
 
 See the documentation of the \"--time\" option of GNU ls for details.")
 (push 'dired-quick-sort-time-last savehist-additional-variables)
 
 ;;;###autoload
 (defun dired-quick-sort (&optional sort-by reverse group-directories time)
-  "Sort dired by the given criteria. Pass nil to any of these arguments to use
-the value used last time, even after restarting Emacs if `savehist-mode' is
-enabled. When invoked interactively, nil's are passed to all arguments."
+  "Sort dired by the given criteria.
+
+Pass nil to any of these arguments to use the value used last time, even after
+restarting Emacs if `savehist-mode' is enabled.  When invoked interactively,
+nil's are passed to all arguments."
   (interactive)
   (setq dired-quick-sort-sort-by-last (or sort-by dired-quick-sort-sort-by-last)
         dired-quick-sort-reverse-last (or reverse dired-quick-sort-reverse-last)
@@ -127,20 +132,22 @@ _q_: quit                   ^ ^                     ^ ^                         
 
 ;;;###autoload
 (defun dired-quick-sort-setup ()
-  "Use the default setup. This will bind \"S\" in `dired-mode' to run
-`hydra-dired-quick-sort/body', and automatically run the sorting criteria after
-entering `dired-mode'. You can choose to not call this setup function and run a
-modified version of this function to use your own preferred setup:
+  "Run the default setup.
+
+This will bind \"S\" in `dired-mode' to run `hydra-dired-quick-sort/body', and
+automatically run the sorting criteria after entering `dired-mode'.  You can
+choose to not call this setup function and run a modified version of this
+function to use your own preferred setup:
 
   ;; Replace \"S\" with other keys to invoke the dired-quick-sort hydra.
   (define-key dired-mode-map \"S\" 'hydra-dired-quick-sort/body)
   ;; Automatically use the sorting defined here to sort.
-  (add-hook 'dired-mode-hook 'dired-quick-sort)
-"
+  (add-hook 'dired-mode-hook 'dired-quick-sort)"
+
   (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
   (add-hook 'dired-mode-hook 'dired-quick-sort))
 
 (provide 'dired-quick-sort)
 
-;; dired-quick-sort.el ends here
+;;; dired-quick-sort.el ends here
 
