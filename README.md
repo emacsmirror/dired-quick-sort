@@ -34,6 +34,9 @@ automatically sorted according to the setup in this package. See the document of
 `dired-quick-sort-setup` if you need a different setup. It is recommended that at least `-l` should
 be put into `dired-listing-switches`.
 
+To make full use of this extensions, please make sure that the variable `insert-directory-program`
+points to the GNU version of ls.
+
 ## Bug Report, Feature Request and Contribution
 
 Please report all bugs and feature requests to the

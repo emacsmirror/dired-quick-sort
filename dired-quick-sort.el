@@ -28,7 +28,9 @@
 ;; This package provides ways to quickly sort dired buffers in various ways.
 ;; With `savehist-mode' enabled (strongly recommended), the last used sorting
 ;; criteria are automatically used when sorting, even after restarting Emacs.  A
-;; hydra is defined to conveniently change sorting criteria.
+;; hydra is defined to conveniently change sorting criteria.  To make full use
+;; of this extensions, please make sure that the variable
+;;`insert-directory-program' points to the GNU version of ls.
 
 ;;; Code:
 
