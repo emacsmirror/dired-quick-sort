@@ -9,6 +9,12 @@ This [Emacs][] package provides persistent quick sorting of [Dired][] buffers in
 
 ## Installation
 
+### MELPA
+
+dired-quick-sort can be installed from the [MELPA][] repository. Follow the
+[instructions](http://melpa.org/#/getting-started) to set up MELPA and then run `package-install RET
+dired-quick-sort RET` to install.
+
 ### Manual Installation
 
 Download this package and add the following to your `~/.emacs` or `~/.emacs.d/init.el`:
@@ -28,7 +34,14 @@ automatically sorted according to the setup in this package. See the document of
 `dired-quick-sort-setup` if you need a different setup. It is recommended that at least `-l` should
 be put into `dired-listing-switches`.
 
+## Bug Report, Feature Request and Contribution
+
+Please report all bugs and feature requests to the
+[issue tracker](https://gitlab.com/xuhdev/dired-quick-sort/issues). To contribute, please create a
+[merge request](https://gitlab.com/xuhdev/dired-quick-sort/merge_requests).
+
 
 [Emacs]: https://www.gnu.org/software/emacs/
 [Dired]: https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html
+[MELPA]: http://melpa.org
 [hydra]: https://github.com/abo-abo/hydra
