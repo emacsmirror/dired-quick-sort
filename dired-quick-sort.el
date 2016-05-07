@@ -43,17 +43,18 @@ The value should be one of none, time, size, version (natural, an improved
 version of name and extension.
 
 See the documentation of the \"--sort\" option of GNU ls for details.")
-(push 'dired-quick-sort-sort-by-last savehist-additional-variables)
+(add-to-list 'savehist-additional-variables 'dired-quick-sort-sort-by-last)
 (defvar dired-quick-sort-reverse-last ?n
   "Whether reversing was enabled when sorting was used last time.
 
 The value should be either ?y or ?n.")
-(push 'dired-quick-sort-reverse-last savehist-additional-variables)
+(add-to-list 'savehist-additional-variables 'dired-quick-sort-reverse-last)
 (defvar dired-quick-sort-group-directories-last ?n
   "Whether directories are grouped together when sorting was used last time.
 
 The value should either be ?y or ?n.")
-(push 'dired-quick-sort-group-directories-last savehist-additional-variables)
+(add-to-list 'savehist-additional-variables
+             'dired-quick-sort-group-directories-last)
 (defvar dired-quick-sort-time-last "default"
   "The time option used last time.
 
@@ -62,7 +63,7 @@ status.  If the sort-by option is set as \"time\", the specified time will be
 used as the key for sorting.
 
 See the documentation of the \"--time\" option of GNU ls for details.")
-(push 'dired-quick-sort-time-last savehist-additional-variables)
+(add-to-list 'savehist-additional-variables 'dired-quick-sort-time-last)
 
 ;;;###autoload
 (defun dired-quick-sort (&optional sort-by reverse group-directories time)
