@@ -1,4 +1,4 @@
-;;; dired-quick-sort.el --- Persistent quick sorting of dired buffers in various ways. -*- lexical-binding: t; fill-column: 80; coding: utf-8; indent-tabs-mode: nil; -*-
+;;; dired-quick-sort.el --- Persistent quick sorting of dired buffers in various ways. -*- lexical-binding: t; fill-column: 80; coding: utf-8; indent-tabs-mode: nil; sentence-end-double-space: t; -*-
 
 ;; Copyright (C) 2016  Hong Xu <hong@topbug.net>
 
