@@ -75,9 +75,7 @@ explained in the variable `dired-quick-sort-reverse-last',
 `dired-quick-sort-time-last' respectively.  Besides, passing nil to any of these
 arguments to use the value used last time (that is, the values of the four
 variables mentioned before), even after restarting Emacs if `savehist-mode' is
-enabled.  When invoked interactively, nil's are passed to all arguments.
-
-SORT-BY"
+enabled.  When invoked interactively, nil's are passed to all arguments."
   (interactive)
   (setq dired-quick-sort-sort-by-last (or sort-by dired-quick-sort-sort-by-last)
         dired-quick-sort-reverse-last (or reverse dired-quick-sort-reverse-last)
