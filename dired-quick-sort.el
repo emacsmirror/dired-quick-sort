@@ -44,6 +44,11 @@
 ;;
 ;; To make full use of this extensions, please make sure that the variable
 ;; `insert-directory-program' points to the GNU version of ls.
+;;
+;; To report bugs and make feature requests, please open a new ticket at the
+;; issue tracker <https://gitlab.com/xuhdev/dired-quick-sort/issues>. To
+;; contribute, please create a merge request at
+;; <https://gitlab.com/xuhdev/dired-quick-sort/merge_requests>.
 
 ;;; Code:
 
