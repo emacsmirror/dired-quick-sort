@@ -48,6 +48,7 @@
 ;;; Code:
 
 (require 'dired)
+(require 'ls-lisp)
 (require 'savehist)
 (require 'hydra)
 
@@ -164,8 +165,12 @@ function to use your own preferred setup:
   ;; Automatically use the sorting defined here to sort.
   (add-hook 'dired-mode-hook 'dired-quick-sort)"
 
-  (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
-  (add-hook 'dired-mode-hook 'dired-quick-sort))
+  (if (not ls-lisp-use-insert-directory-program)
+      (display-warning 'dired-quick-sort "`ls-lisp-use-insert-directory-program'
+is nil. The package `dired-quick-sort' will not work and thus is not set up by
+`dired-quick-sort-setup'." :warning)
+    (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
+    (add-hook 'dired-mode-hook 'dired-quick-sort)))
 
 (provide 'dired-quick-sort)
 
