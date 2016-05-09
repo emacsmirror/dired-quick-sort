@@ -12,8 +12,14 @@ This [Emacs][] package provides persistent quick sorting of [Dired][] buffers in
 ### MELPA
 
 dired-quick-sort can be installed from the [MELPA][] repository. Follow the
-[instructions](http://melpa.org/#/getting-started) to set up MELPA and then run `package-install RET
-dired-quick-sort RET` to install.
+[instructions](http://melpa.org/#/getting-started) to set up MELPA and then run
+`package-install RET dired-quick-sort RET` to install.
+
+### el-get
+
+dired-quick-sort can be installed via [el-get][]. Follow the
+[instructions](https://github.com/dimitri/el-get#installation) to set up el-get and then run
+`el-get-install RET dired-quick-sort RET` to install.
 
 ### Manual Installation
 
@@ -47,4 +53,5 @@ Please report all bugs and feature requests to the
 [Emacs]: https://www.gnu.org/software/emacs/
 [Dired]: https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html
 [MELPA]: http://melpa.org
+[el-get]: http://tapoueh.org/emacs/el-get.html
 [hydra]: https://github.com/abo-abo/hydra
