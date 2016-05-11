@@ -113,6 +113,9 @@ enabled.  When invoked interactively, nil's are passed to all arguments."
            (if (not (string= dired-quick-sort-time-last "default"))
                (concat "--time=" dired-quick-sort-time-last) ""))))
 
+(defun dired-quick-sort--sort-by-last (field)
+  (if (string= dired-quick-sort-sort-by-last field) "[X]" "[ ]"))
+
 (defhydra hydra-dired-quick-sort (:hint none :color pink)
   "
 ^Sort by^                   ^Reverse^               ^Group Directories^            ^Time
@@ -125,13 +128,13 @@ _e_: ?e? extension          ^ ^                     ^ ^                         
 _q_: quit                   ^ ^                     ^ ^                            _S_: ?S? status
 "
   ("n" (dired-quick-sort "none" nil nil nil)
-       (if (string= dired-quick-sort-sort-by-last "none") "[X]" "[ ]"))
+       (dired-quick-sort--sort-by-last "none"))
   ("t" (dired-quick-sort "time" nil nil nil)
-       (if (string= dired-quick-sort-sort-by-last "time") "[X]" "[ ]"))
+       (dired-quick-sort--sort-by-last "time"))
   ("s" (dired-quick-sort "size" nil nil nil)
-       (if (string= dired-quick-sort-sort-by-last "size") "[X]" "[ ]"))
+       (dired-quick-sort--sort-by-last "size"))
   ("v" (dired-quick-sort "version" nil nil nil)
-       (if (string= dired-quick-sort-sort-by-last "version") "[X]" "[ ]"))
+       (dired-quick-sort--sort-by-last "version"))
   ("e" (dired-quick-sort "extension" nil nil nil)
        (if (string= dired-quick-sort-sort-by-last "extension") "[X]" "[ ]"))
   ("r" (dired-quick-sort nil ?y nil nil)
