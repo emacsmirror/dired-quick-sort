@@ -40,7 +40,8 @@
 ;; buffers are automatically sorted according to the setup in this package.  See
 ;; the document of `dired-quick-sort-setup` if you need a different setup.  It
 ;; is recommended that at least "-l" should be put into
-;; `dired-listing-switches'.
+;; `dired-listing-switches'.  If used with dired+, you may want to set
+;; `diredp-hide-details-initially-flag' to nil.
 ;;
 ;; To make full use of this extensions, please make sure that the variable
 ;; `insert-directory-program' points to the GNU version of ls.
