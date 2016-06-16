@@ -53,6 +53,6 @@ Please report all bugs and feature requests to the
 
 [Emacs]: https://www.gnu.org/software/emacs/
 [Dired]: https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html
-[MELPA]: http://melpa.org
+[MELPA]: http://melpa.org/#/dired-quick-sort
 [el-get]: http://tapoueh.org/emacs/el-get.html
 [hydra]: https://github.com/abo-abo/hydra
