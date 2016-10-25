@@ -50,6 +50,11 @@ Please report all bugs and feature requests to the
 [issue tracker](https://gitlab.com/xuhdev/dired-quick-sort/issues). To contribute, please create a
 [merge request](https://gitlab.com/xuhdev/dired-quick-sort/merge_requests).
 
+## Questions? Comments?
+
+For any other questions and comments, please send them to
+https://www.topbug.net/blog/2016/08/17/dired-quick-sort-sort-dired-buffers-quickly-in-emacs/ .
+
 
 [Emacs]: https://www.gnu.org/software/emacs/
 [Dired]: https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html

@@ -50,6 +50,9 @@
 ;; issue tracker <https://gitlab.com/xuhdev/dired-quick-sort/issues>. To
 ;; contribute, please create a merge request at
 ;; <https://gitlab.com/xuhdev/dired-quick-sort/merge_requests>.
+;;
+;; For any other questions and comments, please send them to
+;; <https://www.topbug.net/blog/2016/08/17/dired-quick-sort-sort-dired-buffers-quickly-in-emacs/>.
 
 ;;; Code:
 
