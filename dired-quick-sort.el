@@ -107,15 +107,23 @@ enabled.  When invoked interactively, nil's are passed to all arguments."
         dired-quick-sort-group-directories-last
         (or group-directories dired-quick-sort-group-directories-last)
         dired-quick-sort-time-last (or time dired-quick-sort-time-last))
-  (dired-sort-other
-   (format "%s --sort=%s %s %s %s" dired-listing-switches
-           dired-quick-sort-sort-by-last
-           (if (char-equal dired-quick-sort-reverse-last ?y)
-               "-r" "")
-           (if (char-equal dired-quick-sort-group-directories-last ?y)
-               "--group-directories-first" "")
-           (if (not (string= dired-quick-sort-time-last "default"))
-               (concat "--time=" dired-quick-sort-time-last) ""))))
+  (dired-sort-other (dired-quick-sort--format-switches)))
+
+(defun dired-quick-sort-set-switches ()
+  "Set switches according to variables. For use in `dired-mode-hook'."
+  (dired-sort-other (dired-quick-sort--format-switches) t))
+
+(defun dired-quick-sort--format-switches ()
+  "Return a dired-listing-switches string according to
+`dired-quick-sort' settings."
+  (format "%s --sort=%s %s %s %s" dired-listing-switches
+          dired-quick-sort-sort-by-last
+          (if (char-equal dired-quick-sort-reverse-last ?y)
+              "-r" "")
+          (if (char-equal dired-quick-sort-group-directories-last ?y)
+              "--group-directories-first" "")
+          (if (not (string= dired-quick-sort-time-last "default"))
+              (concat "--time=" dired-quick-sort-time-last) "")))
 
 (defun dired-quick-sort--sort-by-last (field)
   (if (string= dired-quick-sort-sort-by-last field) "[X]" "[ ]"))
@@ -191,7 +199,7 @@ point to GNU ls.  Please set `insert-directory-program' to GNU ls.  The package
 `dired-quick-sort' will not work and thus is not set up by
 `dired-quick-sort-setup'." :warning)
       (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
-      (add-hook 'dired-mode-hook 'dired-quick-sort))))
+      (add-hook 'dired-mode-hook #'dired-quick-sort-set-switches))))
 
 (provide 'dired-quick-sort)
 
