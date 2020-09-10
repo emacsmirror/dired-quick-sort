@@ -65,7 +65,7 @@
   "The main sort criteria used last time.
 
 The value should be one of none, time, size, version (natural, an improved
-version of name and extension.
+version of name and extension).
 
 See the documentation of the \"--sort\" option of GNU ls for details.")
 (add-to-list 'savehist-additional-variables 'dired-quick-sort-sort-by-last)
