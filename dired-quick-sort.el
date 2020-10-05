@@ -62,9 +62,9 @@
 (require 'hydra)
 
 (defvar dired-quick-sort-sort-by-last "version"
-  "The main sort criteria used last time.
+  "The main sort criterion used last time.
 
-The value should be one of none, time, size, version (natural, an improved
+The value should be one of none, time, size, version (i.e., natural, an improved
 version of name and extension).
 
 See the documentation of the \"--sort\" option of GNU ls for details.")
