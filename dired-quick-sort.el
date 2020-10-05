@@ -182,8 +182,16 @@ to use your own preferred setup:
       (display-warning 'dired-quick-sort "`ls-lisp-use-insert-directory-program'
 is nil. The package `dired-quick-sort' will not work and thus is not set up by
 `dired-quick-sort-setup'." :warning)
-    (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
-    (add-hook 'dired-mode-hook 'dired-quick-sort)))
+    (if (not
+         (with-temp-buffer
+           (call-process insert-directory-program nil t nil "--version")
+           (string-match-p "GNU" (buffer-string))))
+        (display-warning 'dired-quick-sort "`insert-directory-program' does not
+point to GNU ls.  Please set `insert-directory-program' to GNU ls.  The package
+`dired-quick-sort' will not work and thus is not set up by
+`dired-quick-sort-setup'." :warning)
+      (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
+      (add-hook 'dired-mode-hook 'dired-quick-sort))))
 
 (provide 'dired-quick-sort)
 
