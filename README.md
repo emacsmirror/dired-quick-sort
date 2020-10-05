@@ -41,8 +41,10 @@ automatically sorted according to the setup in this package. See the document of
 be put into `dired-listing-switches`. If used with `dired+`, you may want to set
 `diredp-hide-details-initially-flag` to nil.
 
-To make full use of this extensions, please make sure that the variable `insert-directory-program`
-points to the GNU version of ls.
+To use this extension, please make sure that the variable `insert-directory-program` points to the
+GNU version of ls. If you are on MacOS, please refer to
+[this guide](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/)
+for installing GNU command line tools.
 
 ## Bug Report, Feature Request and Contribution
 
