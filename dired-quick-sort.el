@@ -5,7 +5,7 @@
 ;; Author: Hong Xu <hong@topbug.net>
 ;; URL: https://gitlab.com/xuhdev/dired-quick-sort#dired-quick-sort
 ;; Version: 0.1+
-;; Package-Requires: ((hydra "0.13.0"))
+;; Package-Requires: ((hydra "0.13.0") (emacs "24"))
 ;; Keywords: convenience, files
 
 ;; This file is not part of GNU Emacs
@@ -131,23 +131,23 @@ _v_: ?v? version (natural)  ^ ^                     ^ ^                         
 _e_: ?e? extension          ^ ^                     ^ ^                            _c_: ?c? ctime
 _q_: quit                   ^ ^                     ^ ^                            _S_: ?S? status
 "
-  ("n" (dired-quick-sort "none" nil nil nil)
+  ("n" (dired-quick-sort "none")
        (dired-quick-sort--sort-by-last "none"))
-  ("t" (dired-quick-sort "time" nil nil nil)
+  ("t" (dired-quick-sort "time")
        (dired-quick-sort--sort-by-last "time"))
-  ("s" (dired-quick-sort "size" nil nil nil)
+  ("s" (dired-quick-sort "size")
        (dired-quick-sort--sort-by-last "size"))
-  ("v" (dired-quick-sort "version" nil nil nil)
+  ("v" (dired-quick-sort "version")
        (dired-quick-sort--sort-by-last "version"))
-  ("e" (dired-quick-sort "extension" nil nil nil)
+  ("e" (dired-quick-sort "extension")
        (if (string= dired-quick-sort-sort-by-last "extension") "[X]" "[ ]"))
-  ("r" (dired-quick-sort nil ?y nil nil)
+  ("r" (dired-quick-sort nil ?y)
        (if (char-equal dired-quick-sort-reverse-last ?y) "[X]" "[ ]"))
-  ("R" (dired-quick-sort nil ?n nil nil)
+  ("R" (dired-quick-sort nil ?n)
        (if (char-equal dired-quick-sort-reverse-last ?n) "[X]" "[ ]"))
-  ("g" (dired-quick-sort nil nil ?y nil)
+  ("g" (dired-quick-sort nil nil ?y)
        (if (char-equal dired-quick-sort-group-directories-last ?y) "[X]" "[ ]"))
-  ("G" (dired-quick-sort nil nil ?n nil)
+  ("G" (dired-quick-sort nil nil ?n)
        (if (char-equal dired-quick-sort-group-directories-last ?n) "[X]" "[ ]"))
   ("d" (dired-quick-sort nil nil nil "default")
        (if (string= dired-quick-sort-time-last "default") "[X]" "[ ]"))
