@@ -46,6 +46,12 @@ GNU version of ls. If you are on MacOS, please refer to
 [this guide](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/)
 for installing GNU command line tools.
 
+## TRAMP Support
+
+You may be able to use this package when your are using TRAMP, but the actual sorting may be only
+working partly. This is likely due to the fact that TRAMP has its own way of listing files, of which
+I don't have a good grasp.
+
 ## Questions, Comments, Bug Report, Feature Request and Contribution
 
 Please send all comments, questions, bug reports and feature requests to the
