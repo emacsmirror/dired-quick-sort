@@ -46,16 +46,11 @@ GNU version of ls. If you are on MacOS, please refer to
 [this guide](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/)
 for installing GNU command line tools.
 
-## Bug Report, Feature Request and Contribution
+## Questions, Comments, Bug Report, Feature Request and Contribution
 
-Please report all bugs and feature requests to the
+Please send all comments, questions, bug reports and feature requests to the
 [issue tracker](https://gitlab.com/xuhdev/dired-quick-sort/issues). To contribute, please create a
 [merge request](https://gitlab.com/xuhdev/dired-quick-sort/merge_requests).
-
-## Questions? Comments?
-
-For any other questions and comments, please send them to
-https://www.topbug.net/blog/2016/08/17/dired-quick-sort-sort-dired-buffers-quickly-in-emacs/ .
 
 
 [Emacs]: https://www.gnu.org/software/emacs/
