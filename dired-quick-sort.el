@@ -187,7 +187,7 @@ to use your own preferred setup:
   (if (not ls-lisp-use-insert-directory-program)
       (display-warning 'dired-quick-sort "`ls-lisp-use-insert-directory-program'
 is nil. The package `dired-quick-sort' will not work and thus is not set up by
-`dired-quick-sort-setup'." :warning)
+`dired-quick-sort-setup'. Set it to t to suppress this warning." :warning)
     (if (not
          (with-temp-buffer
            (call-process insert-directory-program nil t nil "--version")
