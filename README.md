@@ -46,6 +46,11 @@ GNU version of ls. If you are on MacOS, please refer to
 [this guide](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/)
 for installing GNU command line tools.
 
+Alternatively, to suppress warning and silently fail when you don't have the appropriate system
+environment set up, set `dired-quick-sort-suppress-setup-warning` to t:
+
+    (setq dired-quick-sort-suppress-setup-warning t)
+
 ## TRAMP Support
 
 You may be able to use this package when your are using TRAMP, but the actual sorting may be only
