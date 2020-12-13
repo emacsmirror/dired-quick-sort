@@ -190,7 +190,7 @@ to use your own preferred setup:
   (add-hook 'dired-mode-hook 'dired-quick-sort)"
 
   (if (not ls-lisp-use-insert-directory-program)
-      (when dired-quick-sort-suppress-setup-warning
+      (unless dired-quick-sort-suppress-setup-warning
         (display-warning 'dired-quick-sort
 "`ls-lisp-use-insert-directory-program' is nil. The package `dired-quick-sort'
 will not work and thus is not set up by `dired-quick-sort-setup'. Set it to t to
@@ -201,7 +201,7 @@ silently." :warning))
          (with-temp-buffer
            (call-process insert-directory-program nil t nil "--version")
            (string-match-p "GNU" (buffer-string))))
-        (when dired-quick-sort-suppress-setup-warning
+        (unless dired-quick-sort-suppress-setup-warning
           (display-warning 'dired-quick-sort "`insert-directory-program' does
 not point to GNU ls.  Please set `insert-directory-program' to GNU ls.  The
 package `dired-quick-sort' will not work and thus is not set up by
