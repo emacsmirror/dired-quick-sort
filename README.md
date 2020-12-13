@@ -28,6 +28,14 @@ Download this package and add the following to your `~/.emacs` or `~/.emacs.d/in
     (add-to-list 'load-path "~/path/to/dired-quick-sort")
     (load "dired-quick-sort.el")
 
+## Requirements
+
+This extension requires GNU ls (part of [GNU coreutils](https://www.gnu.org/software/coreutils/)) to
+be present on the system. It is usually shipped by default on most GNU/Linux distributions. If you
+are on MacOS, please refer to [this
+guide](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/)
+for installing GNU command line tools.
+
 ## Configuration
 
 Add the following to your `~/.emacs` or `~/.emacs.d/init.el` for a quick setup:
@@ -42,9 +50,7 @@ be put into `dired-listing-switches`. If used with `dired+`, you may want to set
 `diredp-hide-details-initially-flag` to nil.
 
 To use this extension, please make sure that the variable `insert-directory-program` points to the
-GNU version of ls. If you are on MacOS, please refer to
-[this guide](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/)
-for installing GNU command line tools.
+GNU version of ls.
 
 Alternatively, to suppress warning and silently fail when you don't have the appropriate system
 environment set up, set `dired-quick-sort-suppress-setup-warning` to t:
