@@ -60,8 +60,10 @@
 (require 'hydra)
 
 (defcustom dired-quick-sort-suppress-setup-warning nil
-  "Set to t to suppress warning in `dired-quick-sort-setup'."
-  :type 'boolean
+  "How to handle the warning in `dired-quick-sort-setup'."
+  :type '(choice (const :tag "Display" nil)
+                 (const :tag "Suppress" t)
+                 (const :tag "Display as a message" 'message))
   :group 'dired-quick-sort)
 
 (defvar dired-quick-sort-sort-by-last "version"
@@ -174,6 +176,17 @@ _q_: quit                   ^ ^                     ^ ^                         
        (if (string= dired-quick-sort-time-last "status") "[X]" "[ ]"))
   ("q" nil "quit" :hint t :color blue))
 
+(defun dired-quick-sort--display-setup-warning (msg)
+  "Display setup warning according to
+`dired-quick-sort-suppress-setup-warning'."
+  (let ((display-func
+         (cond
+          ((null dired-quick-sort-suppress-setup-warning)
+           (lambda (m) (display-warning 'dired-quick-sort m)))
+          ((eq dired-quick-sort-suppress-setup-warning 'message) #'message)
+          ((eq dired-quick-sort-suppress-setup-warning t) #'ignore))))
+    (funcall display-func msg)))
+
 ;;;###autoload
 (defun dired-quick-sort-setup ()
   "Run the default setup.
@@ -190,24 +203,23 @@ to use your own preferred setup:
   (add-hook 'dired-mode-hook 'dired-quick-sort)"
 
   (if (not ls-lisp-use-insert-directory-program)
-      (unless dired-quick-sort-suppress-setup-warning
-        (display-warning 'dired-quick-sort
+      (dired-quick-sort--display-setup-warning
 "`ls-lisp-use-insert-directory-program' is nil. The package `dired-quick-sort'
 will not work and thus is not set up by `dired-quick-sort-setup'. Set it to t to
 suppress this warning. Alternatively, set
 `dired-quick-sort-suppress-setup-warning' to suppress warning and skip setup
-silently." :warning))
+silently.")
     (if (not
          (with-temp-buffer
            (call-process insert-directory-program nil t nil "--version")
            (string-match-p "GNU" (buffer-string))))
-        (unless dired-quick-sort-suppress-setup-warning
-          (display-warning 'dired-quick-sort "`insert-directory-program' does
+        (dired-quick-sort--display-setup-warning
+"`insert-directory-program' does
 not point to GNU ls.  Please set `insert-directory-program' to GNU ls.  The
 package `dired-quick-sort' will not work and thus is not set up by
 `dired-quick-sort-setup'. Alternatively, set
 `dired-quick-sort-suppress-setup-warning' to suppress warning and skip setup
-silently." :warning))
+silently.")
       (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
       (add-hook 'dired-mode-hook #'dired-quick-sort-set-switches))))
 
