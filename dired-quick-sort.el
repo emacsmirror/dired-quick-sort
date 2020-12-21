@@ -4,7 +4,7 @@
 
 ;; Author: Hong Xu <hong@topbug.net>
 ;; URL: https://gitlab.com/xuhdev/dired-quick-sort#dired-quick-sort
-;; Version: 0.2
+;; Version: 0.2+
 ;; Package-Requires: ((hydra "0.13.0") (emacs "24"))
 ;; Keywords: convenience, files
 
