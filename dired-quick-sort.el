@@ -116,7 +116,8 @@ enabled.  When invoked interactively, nil's are passed to all arguments."
 
 (defun dired-quick-sort-set-switches ()
   "Set switches according to variables. For use in `dired-mode-hook'."
-  (dired-sort-other (dired-quick-sort--format-switches) t))
+  (unless dired-sort-inhibit
+    (dired-sort-other (dired-quick-sort--format-switches) t)))
 
 (defun dired-quick-sort--format-switches ()
   "Return a dired-listing-switches string according to
