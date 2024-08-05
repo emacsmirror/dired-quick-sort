@@ -1,6 +1,6 @@
 ;;; dired-quick-sort.el --- Persistent quick sorting of dired buffers in various ways. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016 -- 2020 Hong Xu <hong@topbug.net>
+;; Copyright (C) 2016--2024 Hong Xu <hong@topbug.net>
 
 ;; Author: Hong Xu <hong@topbug.net>
 ;; URL: https://gitlab.com/xuhdev/dired-quick-sort#dired-quick-sort
@@ -122,8 +122,10 @@ enabled.  When invoked interactively, nil's are passed to all arguments."
 (defun dired-quick-sort--format-switches ()
   "Return a dired-listing-switches string according to
 `dired-quick-sort' settings."
-  (format "%s --sort=%s %s %s %s" dired-listing-switches
-          dired-quick-sort-sort-by-last
+  (format "%s %s %s %s %s" dired-listing-switches
+          (if (string= dired-quick-sort-sort-by-last "default")
+              ""
+            (concat "--sort=" dired-quick-sort-sort-by-last))
           (if (char-equal dired-quick-sort-reverse-last ?y)
               "-r" "")
           (if (char-equal dired-quick-sort-group-directories-last ?y)
@@ -143,38 +145,42 @@ _t_: ?t? time               _R_: ?R? no             _G_: ?G? no                 
 _s_: ?s? size               ^ ^                     ^ ^                            _a_: ?a? access
 _v_: ?v? version (natural)  ^ ^                     ^ ^                            _u_: ?u? use
 _e_: ?e? extension          ^ ^                     ^ ^                            _c_: ?c? ctime
-_q_: quit                   ^ ^                     ^ ^                            _S_: ?S? status
+_D_: ?D? default            ^ ^                     ^ ^                            _S_: ?S? status
+_q_: quit                   ^ ^                     ^ ^                            ^ ^
 "
   ("n" (dired-quick-sort "none")
-       (dired-quick-sort--sort-by-last "none"))
+   (dired-quick-sort--sort-by-last "none"))
   ("t" (dired-quick-sort "time")
-       (dired-quick-sort--sort-by-last "time"))
+   (dired-quick-sort--sort-by-last "time"))
   ("s" (dired-quick-sort "size")
-       (dired-quick-sort--sort-by-last "size"))
+   (dired-quick-sort--sort-by-last "size"))
   ("v" (dired-quick-sort "version")
-       (dired-quick-sort--sort-by-last "version"))
+   (dired-quick-sort--sort-by-last "version"))
   ("e" (dired-quick-sort "extension")
-       (if (string= dired-quick-sort-sort-by-last "extension") "[X]" "[ ]"))
+   (if (string= dired-quick-sort-sort-by-last "extension") "[X]" "[ ]"))
+  ;; No --sort switch passed to ls. This can be useful when used in combination with LC_COLLATE="en_US.utf8"
+  ("D" (dired-quick-sort "default")
+   (if (string= dired-quick-sort-sort-by-last "default") "[X]" "[ ]"))
   ("r" (dired-quick-sort nil ?y)
-       (if (char-equal dired-quick-sort-reverse-last ?y) "[X]" "[ ]"))
+   (if (char-equal dired-quick-sort-reverse-last ?y) "[X]" "[ ]"))
   ("R" (dired-quick-sort nil ?n)
-       (if (char-equal dired-quick-sort-reverse-last ?n) "[X]" "[ ]"))
+   (if (char-equal dired-quick-sort-reverse-last ?n) "[X]" "[ ]"))
   ("g" (dired-quick-sort nil nil ?y)
-       (if (char-equal dired-quick-sort-group-directories-last ?y) "[X]" "[ ]"))
+   (if (char-equal dired-quick-sort-group-directories-last ?y) "[X]" "[ ]"))
   ("G" (dired-quick-sort nil nil ?n)
-       (if (char-equal dired-quick-sort-group-directories-last ?n) "[X]" "[ ]"))
+   (if (char-equal dired-quick-sort-group-directories-last ?n) "[X]" "[ ]"))
   ("d" (dired-quick-sort nil nil nil "default")
-       (if (string= dired-quick-sort-time-last "default") "[X]" "[ ]"))
+   (if (string= dired-quick-sort-time-last "default") "[X]" "[ ]"))
   ("A" (dired-quick-sort nil nil nil "atime")
-       (if (string= dired-quick-sort-time-last "atime") "[X]" "[ ]"))
+   (if (string= dired-quick-sort-time-last "atime") "[X]" "[ ]"))
   ("a" (dired-quick-sort nil nil nil "access")
-       (if (string= dired-quick-sort-time-last "access") "[X]" "[ ]"))
+   (if (string= dired-quick-sort-time-last "access") "[X]" "[ ]"))
   ("u" (dired-quick-sort nil nil nil "use")
-       (if (string= dired-quick-sort-time-last "use") "[X]" "[ ]"))
+   (if (string= dired-quick-sort-time-last "use") "[X]" "[ ]"))
   ("c" (dired-quick-sort nil nil nil "ctime")
-       (if (string= dired-quick-sort-time-last "ctime") "[X]" "[ ]"))
+   (if (string= dired-quick-sort-time-last "ctime") "[X]" "[ ]"))
   ("S" (dired-quick-sort nil nil nil "status")
-       (if (string= dired-quick-sort-time-last "status") "[X]" "[ ]"))
+   (if (string= dired-quick-sort-time-last "status") "[X]" "[ ]"))
   ("q" nil "quit" :hint t :color blue))
 
 (defun dired-quick-sort--display-setup-warning (msg)
@@ -205,7 +211,7 @@ to use your own preferred setup:
 
   (if (not ls-lisp-use-insert-directory-program)
       (dired-quick-sort--display-setup-warning
-"`ls-lisp-use-insert-directory-program' is nil. The package `dired-quick-sort'
+       "`ls-lisp-use-insert-directory-program' is nil. The package `dired-quick-sort'
 will not work and thus is not set up by `dired-quick-sort-setup'. Set it to t to
 suppress this warning. Alternatively, set
 `dired-quick-sort-suppress-setup-warning' to suppress warning and skip setup
@@ -215,7 +221,7 @@ silently.")
            (call-process insert-directory-program nil t nil "--version")
            (string-match-p "GNU" (buffer-string))))
         (dired-quick-sort--display-setup-warning
-"`insert-directory-program' does
+         "`insert-directory-program' does
 not point to GNU ls.  Please set `insert-directory-program' to GNU ls.  The
 package `dired-quick-sort' will not work and thus is not set up by
 `dired-quick-sort-setup'. Alternatively, set
