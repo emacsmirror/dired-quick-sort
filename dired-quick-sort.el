@@ -1,10 +1,10 @@
 ;;; dired-quick-sort.el --- Persistent quick sorting of dired buffers in various ways. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2024 Hong Xu <hong@topbug.net>
+;; Copyright (C) 2016--2025 Hong Xu <hong@topbug.net>
 
 ;; Author: Hong Xu <hong@topbug.net>
 ;; URL: https://gitlab.com/xuhdev/dired-quick-sort#dired-quick-sort
-;; Version: 0.2+
+;; Version: 0.3
 ;; Package-Requires: ((hydra "0.13.0") (emacs "24"))
 ;; Keywords: convenience, files
 
