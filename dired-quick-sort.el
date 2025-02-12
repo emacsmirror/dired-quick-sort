@@ -1,11 +1,11 @@
-;;; dired-quick-sort.el --- Persistent quick sorting of dired buffers in various ways. -*- lexical-binding: t; -*-
+;;; dired-quick-sort.el --- Persistent quick sorting of Dired buffers in various ways. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016--2025 Hong Xu <hong@topbug.net>
+;; Copyright (C) 2016-2025 Hong Xu <hong@topbug.net>
 
 ;; Author: Hong Xu <hong@topbug.net>
-;; URL: https://gitlab.com/xuhdev/dired-quick-sort#dired-quick-sort
+;; URL: https://gitlab.com/xuhdev/dired-quick-sort
 ;; Version: 0.3+
-;; Package-Requires: ((hydra "0.13.0") (emacs "24"))
+;; Package-Requires: ((hydra "0.13.0") (emacs "28"))
 ;; Keywords: convenience, files
 
 ;; This file is not part of GNU Emacs
@@ -25,15 +25,14 @@
 
 ;;; Commentary:
 ;;
-;; This package provides ways to quickly sort dired buffers in various ways.
+;; This package provides ways to quickly sort Dired buffers in various ways.
 ;; With `savehist-mode' enabled (strongly recommended), the last used sorting
 ;; criteria are automatically used when sorting, even after restarting Emacs.  A
 ;; hydra is defined to conveniently change sorting criteria.
 ;;
 ;; For a quick setup, Add the following configuration to your "~/.emacs" or
-;; "~/.emacs.d/init.el":
+;; "~/.emacs.d/init.el" after autoloads are in effect:
 ;;
-;;     (require 'dired-quick-sort)
 ;;     (dired-quick-sort-setup)
 ;;
 ;; This will bind "S" in dired-mode to invoke the quick sort hydra and new Dired
@@ -48,7 +47,7 @@
 ;;
 ;; To comment, ask questions, report bugs or make feature requests, please open
 ;; a new ticket at the issue tracker
-;; <https://gitlab.com/xuhdev/dired-quick-sort/issues>. To contribute, please
+;; <https://gitlab.com/xuhdev/dired-quick-sort/issues>.  To contribute, please
 ;; create a merge request at
 ;; <https://gitlab.com/xuhdev/dired-quick-sort/merge_requests>.
 
@@ -58,6 +57,10 @@
 (require 'ls-lisp)
 (require 'savehist)
 (require 'hydra)
+
+(defcustom dired-quick-sort ()
+  "Persistent quick sorting of Dired buffers in various ways."
+  :group 'dired)
 
 (defcustom dired-quick-sort-suppress-setup-warning nil
   "How to handle the warning in `dired-quick-sort-setup'."
@@ -74,17 +77,20 @@ version of name and extension).
 
 See the documentation of the \"--sort\" option of GNU ls for details.")
 (add-to-list 'savehist-additional-variables 'dired-quick-sort-sort-by-last)
+
 (defvar dired-quick-sort-reverse-last ?n
   "Whether reversing was enabled when sorting was used last time.
 
 The value should be either ?y or ?n.")
 (add-to-list 'savehist-additional-variables 'dired-quick-sort-reverse-last)
+
 (defvar dired-quick-sort-group-directories-last ?n
   "Whether directories are grouped together when sorting was used last time.
 
 The value should either be ?y or ?n.")
 (add-to-list 'savehist-additional-variables
              'dired-quick-sort-group-directories-last)
+
 (defvar dired-quick-sort-time-last "default"
   "The time option used last time.
 
@@ -97,7 +103,7 @@ See the documentation of the \"--time\" option of GNU ls for details.")
 
 ;;;###autoload
 (defun dired-quick-sort (&optional sort-by reverse group-directories time)
-  "Sort dired by the given criteria.
+  "Sort Dired by the given criteria.
 
 The possible values of SORT-BY, REVERSE, GROUP-DIRECTORIES and TIME are
 explained in the variable `dired-quick-sort-reverse-last',
@@ -115,27 +121,32 @@ enabled.  When invoked interactively, nil's are passed to all arguments."
   (dired-sort-other (dired-quick-sort--format-switches)))
 
 (defun dired-quick-sort-set-switches ()
-  "Set switches according to variables. For use in `dired-mode-hook'."
+  "Set switches according to variables.
+For use in `dired-mode-hook'."
   (unless dired-sort-inhibit
     (dired-sort-other (dired-quick-sort--format-switches) t)))
 
 (defun dired-quick-sort--format-switches ()
-  "Return a dired-listing-switches string according to
-`dired-quick-sort' settings."
-  (format "%s %s %s %s %s" dired-listing-switches
-          (if (string= dired-quick-sort-sort-by-last "default")
-              ""
-            (concat "--sort=" dired-quick-sort-sort-by-last))
-          (if (char-equal dired-quick-sort-reverse-last ?y)
-              "-r" "")
-          (if (char-equal dired-quick-sort-group-directories-last ?y)
-              "--group-directories-first" "")
-          (if (not (string= dired-quick-sort-time-last "default"))
-              (concat "--time=" dired-quick-sort-time-last) "")))
+  "Return a `dired-listing-switches' string according to `dired-quick-sort' settings."
+  (mapconcat
+   #'identity
+   (list dired-listing-switches
+         (if (string= dired-quick-sort-sort-by-last "default")
+             ""
+           (concat "--sort=" dired-quick-sort-sort-by-last))
+         (if (char-equal dired-quick-sort-reverse-last ?y)
+             "-r" "")
+         (if (char-equal dired-quick-sort-group-directories-last ?y)
+             "--group-directories-first" "")
+         (if (not (string= dired-quick-sort-time-last "default"))
+             (concat "--time=" dired-quick-sort-time-last) ""))
+   " "))
 
 (defun dired-quick-sort--sort-by-last (field)
+  "Sort by the criteria used last time."
   (if (string= dired-quick-sort-sort-by-last field) "[X]" "[ ]"))
 
+;; Possible improvement: Add an interface using transient.
 (defhydra hydra-dired-quick-sort (:hint none :color pink)
   "
 ^Sort by^                   ^Reverse^               ^Group Directories^            ^Time
@@ -184,14 +195,12 @@ _q_: quit                   ^ ^                     ^ ^                         
   ("q" nil "quit" :hint t :color blue))
 
 (defun dired-quick-sort--display-setup-warning (msg)
-  "Display setup warning according to
-`dired-quick-sort-suppress-setup-warning'."
+  "Display setup warning according to `dired-quick-sort-suppress-setup-warning'."
   (let ((display-func
-         (cond
-          ((null dired-quick-sort-suppress-setup-warning)
-           (lambda (m) (display-warning 'dired-quick-sort m)))
-          ((eq dired-quick-sort-suppress-setup-warning 'message) #'message)
-          ((eq dired-quick-sort-suppress-setup-warning t) #'ignore))))
+         (pcase-exhaustive dired-quick-sort-suppress-setup-warning
+           ('nil (lambda (m) (display-warning 'dired-quick-sort m)))
+           ('message #'message)
+           ('t #'ignore))))
     (funcall display-func msg)))
 
 ;;;###autoload
