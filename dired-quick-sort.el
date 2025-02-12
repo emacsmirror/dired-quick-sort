@@ -131,15 +131,14 @@ For use in `dired-mode-hook'."
   (mapconcat
    #'identity
    (list dired-listing-switches
-         (if (string= dired-quick-sort-sort-by-last "default")
-             ""
+         (when (not (string= dired-quick-sort-sort-by-last "default"))
            (concat "--sort=" dired-quick-sort-sort-by-last))
-         (if (char-equal dired-quick-sort-reverse-last ?y)
-             "-r" "")
-         (if (char-equal dired-quick-sort-group-directories-last ?y)
-             "--group-directories-first" "")
-         (if (not (string= dired-quick-sort-time-last "default"))
-             (concat "--time=" dired-quick-sort-time-last) ""))
+         (when (char-equal dired-quick-sort-reverse-last ?y)
+           "-r")
+         (when (char-equal dired-quick-sort-group-directories-last ?y)
+           "--group-directories-first")
+         (when (not (string= dired-quick-sort-time-last "default"))
+           (concat "--time=" dired-quick-sort-time-last)))
    " "))
 
 (defun dired-quick-sort--sort-by-last (field)
