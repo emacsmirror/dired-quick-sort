@@ -1,7 +1,7 @@
 # dired-quick-sort
 
-This [Emacs][] package provides persistent quick sorting of [Dired][] buffers in various ways with
-[hydra][].
+This [Emacs][] package provides persistent quick sorting of [Dired][] buffers in various ways.
+A [transient][] menu (built-in since Emacs 28) is provided as the sorting interface.
 
 ## Screenshot
 
@@ -43,10 +43,10 @@ Add the following to your `~/.emacs` or `~/.emacs.d/init.el` for a quick setup:
     (require 'dired-quick-sort)
     (dired-quick-sort-setup)
 
-This will bind "S" in dired-mode to invoke the quick sort hydra and new Dired buffers are
-automatically sorted according to the setup in this package. See the document of
-`dired-quick-sort-setup` if you need a different setup. It is recommended that at least `-l` should
-be put into `dired-listing-switches`. If used with `dired+`, you may want to set
+This will bind "S" in dired-mode to invoke the sorting menu and new Dired buffers are automatically
+sorted according to the setup in this package. See the document of `dired-quick-sort-setup`
+if you need a different setup. It is recommended that at least `-l` should be put into
+`dired-listing-switches`. If used with `dired+`, you may want to set
 `diredp-hide-details-initially-flag` to nil.
 
 To use this extension, please make sure that the variable `insert-directory-program` points to the
@@ -74,4 +74,4 @@ Please send all comments, questions, bug reports and feature requests to the
 [Dired]: https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html
 [MELPA]: http://melpa.org/#/dired-quick-sort
 [el-get]: http://tapoueh.org/emacs/el-get.html
-[hydra]: https://github.com/abo-abo/hydra
+[transient]: https://github.com/magit/transient

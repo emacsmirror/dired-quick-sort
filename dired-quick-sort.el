@@ -5,7 +5,7 @@
 ;; Author: Hong Xu <hong@topbug.net>
 ;; URL: https://gitlab.com/xuhdev/dired-quick-sort
 ;; Version: 0.3+
-;; Package-Requires: ((hydra "0.13.0") (emacs "28"))
+;; Package-Requires: ((emacs "28"))
 ;; Keywords: convenience, files
 
 ;; This file is not part of GNU Emacs
@@ -27,15 +27,15 @@
 ;;
 ;; This package provides ways to quickly sort Dired buffers in various ways.
 ;; With `savehist-mode' enabled (strongly recommended), the last used sorting
-;; criteria are automatically used when sorting, even after restarting Emacs.  A
-;; hydra is defined to conveniently change sorting criteria.
+;; criteria are automatically used when sorting, even after restarting Emacs.
+;; A transient menu is provided to conveniently change sorting criteria.
 ;;
 ;; For a quick setup, Add the following configuration to your "~/.emacs" or
 ;; "~/.emacs.d/init.el" after autoloads are in effect:
 ;;
 ;;     (dired-quick-sort-setup)
 ;;
-;; This will bind "S" in dired-mode to invoke the quick sort hydra and new Dired
+;; This will bind "S" in dired-mode to invoke the sorting menu and new Dired
 ;; buffers are automatically sorted according to the setup in this package.  See
 ;; the document of `dired-quick-sort-setup` if you need a different setup.  It
 ;; is recommended that at least "-l" should be put into
@@ -56,7 +56,7 @@
 (require 'dired)
 (require 'ls-lisp)
 (require 'savehist)
-(require 'hydra)
+(require 'transient)
 
 (defcustom dired-quick-sort ()
   "Persistent quick sorting of Dired buffers in various ways."
@@ -141,57 +141,112 @@ For use in `dired-mode-hook'."
            (concat "--time=" dired-quick-sort-time-last)))
    " "))
 
-(defun dired-quick-sort--sort-by-last (field)
-  "Sort by the criteria used last time."
-  (if (string= dired-quick-sort-sort-by-last field) "[X]" "[ ]"))
+;;; Transient interface
 
-;; Possible improvement: Add an interface using transient.
-(defhydra hydra-dired-quick-sort (:hint none :color pink)
-  "
-^Sort by^                   ^Reverse^               ^Group Directories^            ^Time
-^^^^^^^^^----------------------------------------------------------------------------------------------------------------
-_n_: ?n? none               _r_: ?r? yes            _g_: ?g? yes                   _d_: ?d? default (last modified time)
-_t_: ?t? time               _R_: ?R? no             _G_: ?G? no                    _A_: ?A? atime
-_s_: ?s? size               ^ ^                     ^ ^                            _a_: ?a? access
-_v_: ?v? version (natural)  ^ ^                     ^ ^                            _u_: ?u? use
-_e_: ?e? extension          ^ ^                     ^ ^                            _c_: ?c? ctime
-_D_: ?D? default            ^ ^                     ^ ^                            _S_: ?S? status
-_q_: quit                   ^ ^                     ^ ^                            ^ ^
-"
-  ("n" (dired-quick-sort "none")
-   (dired-quick-sort--sort-by-last "none"))
-  ("t" (dired-quick-sort "time")
-   (dired-quick-sort--sort-by-last "time"))
-  ("s" (dired-quick-sort "size")
-   (dired-quick-sort--sort-by-last "size"))
-  ("v" (dired-quick-sort "version")
-   (dired-quick-sort--sort-by-last "version"))
-  ("e" (dired-quick-sort "extension")
-   (if (string= dired-quick-sort-sort-by-last "extension") "[X]" "[ ]"))
-  ;; No --sort switch passed to ls. This can be useful when used in combination with LC_COLLATE="en_US.utf8"
-  ("D" (dired-quick-sort "default")
-   (if (string= dired-quick-sort-sort-by-last "default") "[X]" "[ ]"))
-  ("r" (dired-quick-sort nil ?y)
-   (if (char-equal dired-quick-sort-reverse-last ?y) "[X]" "[ ]"))
-  ("R" (dired-quick-sort nil ?n)
-   (if (char-equal dired-quick-sort-reverse-last ?n) "[X]" "[ ]"))
-  ("g" (dired-quick-sort nil nil ?y)
-   (if (char-equal dired-quick-sort-group-directories-last ?y) "[X]" "[ ]"))
-  ("G" (dired-quick-sort nil nil ?n)
-   (if (char-equal dired-quick-sort-group-directories-last ?n) "[X]" "[ ]"))
-  ("d" (dired-quick-sort nil nil nil "default")
-   (if (string= dired-quick-sort-time-last "default") "[X]" "[ ]"))
-  ("A" (dired-quick-sort nil nil nil "atime")
-   (if (string= dired-quick-sort-time-last "atime") "[X]" "[ ]"))
-  ("a" (dired-quick-sort nil nil nil "access")
-   (if (string= dired-quick-sort-time-last "access") "[X]" "[ ]"))
-  ("u" (dired-quick-sort nil nil nil "use")
-   (if (string= dired-quick-sort-time-last "use") "[X]" "[ ]"))
-  ("c" (dired-quick-sort nil nil nil "ctime")
-   (if (string= dired-quick-sort-time-last "ctime") "[X]" "[ ]"))
-  ("S" (dired-quick-sort nil nil nil "status")
-   (if (string= dired-quick-sort-time-last "status") "[X]" "[ ]"))
-  ("q" nil "quit" :hint t :color blue))
+(eval-and-compile
+  (defmacro dired-quick-sort--define-transient-suffix
+      (name label active-var active-value &rest sort-args)
+    "Define a transient suffix for `dired-quick-sort-transient'.
+NAME is appended to \"dired-quick-sort--transient-\" to form the command name.
+LABEL is the display text.  When ACTIVE-VAR equals ACTIVE-VALUE the
+description is highlighted with `transient-value' face.
+SORT-ARGS are passed to `dired-quick-sort'."
+    (let ((fn-name (intern (format "dired-quick-sort--transient-%s" name))))
+      `(transient-define-suffix ,fn-name ()
+         :description
+         (lambda ()
+           (if (string= ,active-var ,active-value)
+               (propertize ,label 'face 'transient-value)
+             ,label))
+         :transient t
+         (interactive)
+         (dired-quick-sort ,@sort-args)))))
+
+;; Sort by
+(dired-quick-sort--define-transient-suffix
+ sort-none "none" dired-quick-sort-sort-by-last "none" "none")
+(dired-quick-sort--define-transient-suffix
+ sort-time "time" dired-quick-sort-sort-by-last "time" "time")
+(dired-quick-sort--define-transient-suffix
+ sort-size "size" dired-quick-sort-sort-by-last "size" "size")
+(dired-quick-sort--define-transient-suffix
+ sort-version "version (natural)"
+ dired-quick-sort-sort-by-last "version" "version")
+(dired-quick-sort--define-transient-suffix
+ sort-extension "extension"
+ dired-quick-sort-sort-by-last "extension" "extension")
+(dired-quick-sort--define-transient-suffix
+ sort-default "default"
+ dired-quick-sort-sort-by-last "default" "default")
+
+;; Time
+(dired-quick-sort--define-transient-suffix
+ time-default "default (last modified time)"
+ dired-quick-sort-time-last "default" nil nil nil "default")
+(dired-quick-sort--define-transient-suffix
+ time-atime "atime"
+ dired-quick-sort-time-last "atime" nil nil nil "atime")
+(dired-quick-sort--define-transient-suffix
+ time-access "access"
+ dired-quick-sort-time-last "access" nil nil nil "access")
+(dired-quick-sort--define-transient-suffix
+ time-use "use"
+ dired-quick-sort-time-last "use" nil nil nil "use")
+(dired-quick-sort--define-transient-suffix
+ time-ctime "ctime"
+ dired-quick-sort-time-last "ctime" nil nil nil "ctime")
+(dired-quick-sort--define-transient-suffix
+ time-status "status"
+ dired-quick-sort-time-last "status" nil nil nil "status")
+
+;; Toggles
+(transient-define-suffix dired-quick-sort--transient-toggle-reverse ()
+  :description
+  (lambda ()
+    (if (char-equal dired-quick-sort-reverse-last ?y)
+        (propertize "Reverse" 'face 'transient-value)
+      "Reverse"))
+  :transient t
+  (interactive)
+  (dired-quick-sort
+   nil (if (char-equal dired-quick-sort-reverse-last ?y) ?n ?y)))
+
+(transient-define-suffix dired-quick-sort--transient-toggle-group-directories ()
+  :description
+  (lambda ()
+    (if (char-equal dired-quick-sort-group-directories-last ?y)
+        (propertize "Group directories first" 'face 'transient-value)
+      "Group directories first"))
+  :transient t
+  (interactive)
+  (dired-quick-sort
+   nil nil (if (char-equal dired-quick-sort-group-directories-last ?y) ?n ?y)))
+
+;;;###autoload (autoload 'dired-quick-sort-transient "dired-quick-sort")
+(transient-define-prefix dired-quick-sort-transient ()
+  "Sort Dired buffer."
+  [[:description
+    (lambda ()
+      (format "Sort by (%s)" dired-quick-sort-sort-by-last))
+    ("n" dired-quick-sort--transient-sort-none)
+    ("t" dired-quick-sort--transient-sort-time)
+    ("s" dired-quick-sort--transient-sort-size)
+    ("v" dired-quick-sort--transient-sort-version)
+    ("e" dired-quick-sort--transient-sort-extension)
+    ("D" dired-quick-sort--transient-sort-default)]
+   [:description
+    (lambda ()
+      (format "Time (%s)" dired-quick-sort-time-last))
+    ("d" dired-quick-sort--transient-time-default)
+    ("A" dired-quick-sort--transient-time-atime)
+    ("a" dired-quick-sort--transient-time-access)
+    ("u" dired-quick-sort--transient-time-use)
+    ("c" dired-quick-sort--transient-time-ctime)
+    ("S" dired-quick-sort--transient-time-status)]]
+  ["Options"
+   ("r" dired-quick-sort--transient-toggle-reverse)
+   ("g" dired-quick-sort--transient-toggle-group-directories)]
+  [("q" "quit" transient-quit-all)])
 
 (defun dired-quick-sort--display-setup-warning (msg)
   "Display setup warning according to `dired-quick-sort-suppress-setup-warning'."
@@ -206,14 +261,15 @@ _q_: quit                   ^ ^                     ^ ^                         
 (defun dired-quick-sort-setup ()
   "Run the default setup.
 
-This will bind the key S in `dired-mode' to run
-`hydra-dired-quick-sort/body', and automatically run the sorting
-criteria after entering `dired-mode'.  You can choose to not call
-this setup function and run a modified version of this function
-to use your own preferred setup:
+This will bind the key S in `dired-mode' to invoke the sorting
+menu, and automatically run the sorting criteria after entering
+`dired-mode'.
 
-  ;; Replace \"S\" with other keys to invoke the dired-quick-sort hydra.
-  (define-key dired-mode-map \"S\" 'hydra-dired-quick-sort/body)
+You can choose to not call this setup function and run a modified
+version of this function to use your own preferred setup:
+
+  ;; Replace \"S\" with other keys to invoke the sorting menu.
+  (define-key dired-mode-map \"S\" #'dired-quick-sort-transient)
   ;; Automatically use the sorting defined here to sort.
   (add-hook 'dired-mode-hook 'dired-quick-sort)"
 
@@ -235,7 +291,7 @@ package `dired-quick-sort' will not work and thus is not set up by
 `dired-quick-sort-setup'. Alternatively, set
 `dired-quick-sort-suppress-setup-warning' to suppress warning and skip setup
 silently.")
-      (define-key dired-mode-map "S" 'hydra-dired-quick-sort/body)
+      (define-key dired-mode-map "S" #'dired-quick-sort-transient)
       (add-hook 'dired-mode-hook #'dired-quick-sort-set-switches))))
 
 (provide 'dired-quick-sort)
