@@ -4,7 +4,7 @@
 
 ;; Author: Hong Xu <hong@topbug.net>
 ;; URL: https://gitlab.com/xuhdev/dired-quick-sort
-;; Version: 1.0.0
+;; Version: 1.0.0+
 ;; Package-Requires: ((emacs "28"))
 ;; Keywords: convenience, files
 
